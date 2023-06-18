@@ -1,0 +1,43 @@
+@mixin button {
+	text-transform: uppercase;
+	font-size: 1rem;
+	padding-bottom: 20px;
+	//letter-spacing: -0.06em;
+  }
+
+@mixin title {
+	font-family: $title-font;
+		text-transform: uppercase;
+		font-size: 1.5rem;
+}
+
+@mixin spinner {
+	color: color(accent);
+}
+
+@mixin left {
+	position: absolute;
+	left: -60px;
+	top: 50%;
+	transform: translateY(-50%);
+	padding: 1rem 2rem;
+	z-index: 2;
+
+	i {
+		font-size: 2rem;
+	}
+}
+
+
+@mixin right {
+	position: absolute;
+	right: -60px;
+	top: 50%;
+	transform: translateY(-50%);
+	padding: 1rem 2rem;
+	z-index: 2;
+
+	i {
+		font-size: 2rem;
+	}
+}

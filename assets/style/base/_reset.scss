@@ -1,0 +1,33 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	scroll-behavior: smooth;
+	// outline: auto;
+}
+
+:root {
+	overflow-x: hidden;
+	transition: all 0.5s;
+	font-size: 14px;
+}
+
+body {
+	font-family: $body-font;
+	color: color(text);
+	background-color: color(main-color);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	transition: .3s;
+
+	&:hover {
+		opacity: .65;
+	}
+}
+
+.active-link {
+	color: color(accent);
+}
