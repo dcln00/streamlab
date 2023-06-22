@@ -1,23 +1,23 @@
 <template lang="pug">
 section#jumbotron.container-fluid.px-0
 	.jumbo-image
-		img(:src='`${config.public.imgBackdropBaseUrl}${data.popularMovies?.results[0].backdrop_path}`' alt='featured movie poster')
+		img(:src='`${config.public.imgBackdropBaseUrl}${data?.popularMovies.results[0].backdrop_path}`' alt='featured movie poster')
 	.wrap.container 
 		.row 
 			.col-sm-6.movie-details
 				.score.d-flex.align-items-center(v-if="$device.isDesktop") 
 					.score-tag.me-3 TMDb
-					.score-number {{data.popularMovies?.results[0].vote_average}}
-				.title {{data.popularMovies?.results[0].title}}
+					.score-number {{data?.popularMovies.results[0].vote_average}}
+				.title {{data.popularMovies.results[0].title}}
 				.details.d-flex.align-items-center
-					.ratings.d-flex.justify-content-center.align-items-center.me-3(v-if="$device.isDesktop") {{data.popularMovies?.results[0].adult ? 'PG' : 'G'}}
-					.year.me-3(v-if="$device.isDesktop") {{data.popularMovies?.results[0].release_date.split('-')[0]}}
-					.time.me-3(v-if="$device.isDesktop") {{ `${Math.floor(single.ids.runtime / 60)} hr ${single.ids.runtime % 60} mins` }}
-					.genre(v-for='(item, index) in data.popularMovies.results[0].genre_ids' :key='index')
-						div(v-for='n in data.movieGenres?.genres') {{ item === n.id ? n.name : null }}
-				.description(v-if="$device.isDesktop") {{data.popularMovies?.results[0].overview}}
-				.description(v-else-if="$device.isMobileOrTablet") {{data.popularMovies?.results[0].overview.slice(0, 120) + '...'}}
-				NuxtLink(:to='`/movie/${data.popularMovies?.results[0].id}`')
+					.ratings.d-flex.justify-content-center.align-items-center.me-3(v-if="$device.isDesktop") {{data?.popularMovies.results[0].adult ? 'PG' : 'G'}}
+					.year.me-3(v-if="$device.isDesktop") {{data?.popularMovies.results[0].release_date.split('-')[0]}}
+					.time.me-3(v-if="$device.isDesktop") {{ `${Math.floor(single?.ids.runtime / 60)} hr ${single?.ids.runtime % 60} mins` }}
+					.genre(v-for='(item, index) in data?.popularMovies.results[0].genre_ids' :key='index')
+						div(v-for='n in data?.movieGenres.genres') {{ item === n.id ? n.name : null }}
+				.description(v-if="$device.isDesktop") {{data?.popularMovies.results[0].overview}}
+				.description(v-else-if="$device.isMobileOrTablet") {{data?.popularMovies.results[0].overview.slice(0, 120) + '...'}}
+				NuxtLink(:to='`/movie/${data?.popularMovies.results[0].id}`')
 					.button(v-if="$device.isDesktop") Watch now
 			.col-sm-6.trailer-details.d-flex.justify-content-center.align-items-center(v-if="$device.isDesktop")
 				.playbutton.d-flex.justify-content-center.align-items-center(@click="openCustom(1)")
@@ -46,14 +46,26 @@ import FsLightbox from "fslightbox-vue/v3"
 const toggler = ref(false)
 const slide = ref(1)
 const config = useRuntimeConfig()
-const popular = computed(() => {
-	return `api/listings`
+const popular = computed(() => `/api/listings`)
+
+const { data, error } = await useFetch(popular, {
+	cache: 1000 * 60 * 5,
+	lazy: true,
 })
-const { data } = await useFetch(popular)
 
-const id = data.value.popularMovies?.results[0].id
+if(error.value) {
+	throw createError({
+			statusCode: 404,
+			statusMessage: 'Page Not Found',
+			fatal: true
+		})
+}
 
-const { data: single } = await useFetch(`/api/movies/${id}`)
+const id = data.value?.popularMovies.results[0].id
+
+const { data: single } = await useFetch(`/api/movies/${id}`, {
+	immediate: true,
+})
 
 function videoArr() {
 	let youtubeKey = []

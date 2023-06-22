@@ -6,12 +6,12 @@ div
 		Pending
 	div(v-else)
 		Head
-			Title {{`${data.ids?.title} - ${meta.title}`}}
+			Title {{`${data?.ids.title} - ${meta.title}`}}
 		section#jumbotron-movie.container-fluid.px-0
 			.back-btn(v-if='$device.isMobileOrTablet')
-				Icon(name='ic:round-keyboard-arrow-left' onclick='history.back()' :size="'1.5rem'")
+				Icon(name='ic:round-keyboard-arrow-left' @click='router.back()' :size="'1.5rem'")
 			.jumbo-image
-				img(:src='`${config.public.imgBackdropBaseUrl}${data.ids?.backdrop_path}`' alt='movie backdrop photo' v-if='data.ids?.backdrop_path')
+				img(:src='`${config.public.imgBackdropBaseUrl}${data?.ids.backdrop_path}`' alt='movie backdrop photo' v-if='data?.ids.backdrop_path')
 			.wrap.container
 				FsLightbox(
 					:toggler="toggler"
@@ -19,20 +19,20 @@ div
 					:sources="videoArr()"
 					)
 				.row.align-items-center
-					.col-sm-4.movie-img.gs-5(v-if='data.ids.poster_path, $device.isDesktop')
-						img(:src='`${config.public.imgBaseUrl}${data.ids?.poster_path}`')
+					.col-sm-4.movie-img.gs-5(v-if='data?.idsposter_path, $device.isDesktop')
+						img(:src='`${config.public.imgBaseUrl}${data?.ids.poster_path}`')
 					.col-sm-8.movie-details.gx-5
 						.score.d-flex.align-items-center
 							.score-tag.me-3 TMDb
-							.score-number {{ data.ids?.vote_average }}
-						.title {{ data.ids?.title }}
+							.score-number {{ data?.ids.vote_average }}
+						.title {{ data?.ids.title }}
 						.details.d-flex.align-items-center
-							.ratings.d-flex.justify-content-center.align-items-center.me-3 {{data.ids?.adult ? 'R' : 'PG'}}
-							.year.me-3 {{new Date(data.ids?.release_date).toUTCString().slice(5, 16) }}
-							.time.me-3 {{ `${Math.floor(data.ids?.runtime / 60)} hr ${data.ids?.runtime % 60} mins` }}
-							.genre(v-for='(item, index) in data.ids?.genres'  :key='index' v-if="$device.isDesktop") {{ item.name }}
-						.genre(v-for='(item, index) in data.ids?.genres.slice(0, 3)'  :key='index' v-if="$device.isMobileOrTablet") {{ item.name }}
-						.description {{ data.ids?.overview }}
+							.ratings.d-flex.justify-content-center.align-items-center.me-3 {{data?.ids.adult ? 'R' : 'PG'}}
+							.year.me-3 {{new Date(data?.ids.release_date).toUTCString().slice(5, 16) }}
+							.time.me-3 {{ `${Math.floor(data?.ids.runtime / 60)} hr ${data?.ids.runtime % 60} mins` }}
+							.genre(v-for='(item, index) in data?.ids.genres'  :key='index' v-if="$device.isDesktop") {{ item.name }}
+						.genre(v-for='(item, index) in data?.ids.genres.slice(0, 3)'  :key='index' v-if="$device.isMobileOrTablet") {{ item.name }}
+						.description {{ data?.ids.overview }}
 						.button(@click="openCustom(1)") #[i(class="fa fa-play" aria-hidden="true")] Watch Trailer
 
 		
@@ -43,11 +43,11 @@ div
 
 			#pills-tabContent.tab-content
 				#cast.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='cast-tab')
-					.controls(v-show="data.credits?.cast.length > 5" v-if="$device.isDesktop")
+					.controls(v-show="data?.credits.cast.length > 5" v-if="$device.isDesktop")
 							.left(@click="leftScroll") #[i(class="fa fa-angle-left" aria-hidden="true")]
 							.right(@click="rightScroll") #[i(class="fa fa-angle-right" aria-hidden="true")]
 					.credits-container 
-						.credits(v-for='(item, index) in data.credits?.cast.slice(0, 10)' :key='index')
+						.credits(v-for='(item, index) in data?.credits.cast.slice(0, 10)' :key='index')
 							.actor.d-flex.justify-content-center.align-items-center(v-if='!item.profile_path')
 								svg(xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewbox='0 0 24 24' fill-rule='evenodd' clip-rule='evenodd' fill='#999')
 									path(d='M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z')
@@ -61,7 +61,7 @@ div
 					
 				#backdrops.tab-pane.fade(role='tabpanel' aria-labelledby='backdrops-tab')
 					.backdrops-container
-						.backdrop(v-for='(item, index) in data.photos?.backdrops.slice(0, 12)' :key='index') 
+						.backdrop(v-for='(item, index) in data?.photos.backdrops.slice(0, 12)' :key='index') 
 							img(:src='`${config.public.imgBaseUrl}${item.file_path}`')
 							
 
@@ -74,19 +74,21 @@ div
 							.tab-pane.fade.show.active(v-for='(item, index) in videoOptions' :id='item' role='tabpanel' :aria-labelledby='`${item}-tab`')
 						
 					.videos-container
-						.videos(v-for='(item, index) in data.videos?.results' :key='index' v-show='item.type === "Trailer" || item.type === "Teaser"') 
+						.videos(v-if='!data?.videos.results')
+							| No videos available
+						.videos(v-for='(item, index) in data?.videos.results' :key='index' v-show='item.type === "Trailer" || item.type === "Teaser"' v-else) 
 							img(:src='`https://img.youtube.com/vi/${item.key}/hqdefault.jpg`' @click="openCustom(videoArr().indexOf(`https://www.youtube.com/watch?v=${item.key}`) + 1)")
 							.play(@click="toggler = !toggler")
 								i(class="fa fa-youtube-play" aria-hidden="true")
 							//- iframe(width='100%', height='100%', :src="`https://www.youtube.com/embed/${item.key}?controls=0`", title="YouTube video player", frameborder="0", allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share", allowfullscreen)
 
-		section#rec.container(v-show='data.rec?.results.length != 0')
+		section#rec.container(v-show='data?.rec.results.length != 0')
 			.title More like this
-			.controls(v-show="data.rec?.results.length > 5" v-if="$device.isDesktop")
+			.controls(v-show="data?.rec.results.length > 5" v-if="$device.isDesktop")
 				.left(@click="recLeft") #[i(class="fa fa-angle-left" aria-hidden="true")]
 				.right(@click="recRight") #[i(class="fa fa-angle-right" aria-hidden="true")]
 			.rec-container 
-				.rec(v-for='(item, index) in data.rec?.results.slice(0, 10)' :key='index')
+				.rec(v-for='(item, index) in data?.rec.results.slice(0, 10)' :key='index')
 					.poster
 						NuxtLink(:to='`/movie/${item?.id}`')
 							img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
@@ -102,14 +104,12 @@ div
 
 <script setup>
 import FsLightbox from "fslightbox-vue/v3"
-
 const toggler = ref(false)
 const slide = ref(1)
-
 const route = useRoute()
+const router = useRouter()
 const config = useRuntimeConfig()
 const movieId = computed(() => route.params.id)
-
 const { data, pending, error } = await useFetch(`/api/movies/${movieId.value}`, {
 	lazy: true,
 })

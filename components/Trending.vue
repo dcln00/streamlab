@@ -7,7 +7,7 @@ section#trending.container
 		.left(@click="leftScroll") #[i(class="fa fa-angle-left" aria-hidden="true")]
 		.right(@click="rightScroll") #[i(class="fa fa-angle-right" aria-hidden="true")]
 	.trending-container
-		.trending(v-for='(item, index) in data.trendingMovies?.results.slice(0, 5)' :key='index') 
+		.trending(v-for='(item, index) in data?.trendingMovies.results.slice(0, 5)' :key='index') 
 			.poster
 				NuxtLink(:to='`/movie/${item?.id}`')
 					img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
@@ -19,9 +19,7 @@ section#trending.container
 
 <script setup>
 const config = useRuntimeConfig()
-
-const trending = computed(() => `api/listings`)
-
+const trending = computed(() => `/api/listings`)
 const { data } = await useFetch(trending)
 
 // import { movieListing } from '~/store/movielisting'

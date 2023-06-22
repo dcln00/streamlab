@@ -291,6 +291,7 @@
 				left: 50%;
 				transform: translate(-50%, -50%);
 				opacity: 1;
+				pointer-events: none;
 
 				i {
 					color: color(white);

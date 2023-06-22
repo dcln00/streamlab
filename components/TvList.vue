@@ -24,6 +24,6 @@ defineProps({
 })
 
 const config = useRuntimeConfig()
-const lists = computed(() => `api/listings`)
+const lists = computed(() => `/api/listings`)
 const { data } = await useFetch(lists)
 </script>

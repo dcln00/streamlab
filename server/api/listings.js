@@ -63,5 +63,5 @@ export default defineEventHandler(async (event) => {
 		}
 	})
 
-	return { popularMovies, upcomingMovies, movieGenres, trendingMovies, popularTv, onTheAirTv, curAirTv}
+	return { popularMovies, upcomingMovies, movieGenres, trendingMovies, popularTv, onTheAirTv, curAirTv }
 })

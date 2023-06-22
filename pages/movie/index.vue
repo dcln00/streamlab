@@ -9,9 +9,9 @@ div
 		.wrap.container.d-flex.justify-content-center.align-items-center
 			.title Movies
 
-	LazyMovieList(:heading="{name:'Trending Movies', url: '/movie/category/trending'}" :show='true' :fetch-params='data.trendingMovies?.results.slice(0, 15)')
-	LazyMovieList(:heading="{name:'Popular Movies', url: '/movie/category/popular'}" :show='true' :fetch-params='data.popularMovies?.results.slice(0, 15)')
-	LazyMovieList(:heading="{name:'Coming Soon', url: '/movie/category/upcoming'}" :show='false' :fetch-params='data.upcomingMovies?.results.slice(0, 15)')
+	LazyMovieList(:heading="{name:'Trending Movies', url: '/movie/category/trending'}" :show='true' :fetch-params='data?.trendingMovies.results.slice(0, 15)')
+	LazyMovieList(:heading="{name:'Popular Movies', url: '/movie/category/popular'}" :show='true' :fetch-params='data?.popularMovies.results.slice(0, 15)')
+	LazyMovieList(:heading="{name:'Coming Soon', url: '/movie/category/upcoming'}" :show='false' :fetch-params='data?.upcomingMovies.results.slice(0, 15)')
 </template>
 
 <script setup>
@@ -21,7 +21,7 @@ const settings = siteSettings()
 const { meta } = storeToRefs(settings)
 
 const config = useRuntimeConfig()
-const lists = computed(() => `api/listings`)
+const lists = computed(() => `/api/listings`)
 const { data } = await useFetch(lists)
 
 
