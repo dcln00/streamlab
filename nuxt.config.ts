@@ -62,5 +62,8 @@ export default defineNuxtConfig({
 			imgBaseUrl: '',
 			imgBackdropBaseUrl: ''
 		}
-	}
+	},
+	nitro:{
+		preset:'vercel'
+	  }
 })

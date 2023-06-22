@@ -1,0 +1,4 @@
+const _virtual__headStatic = {"headTags":"<meta charset=\"utf-8\">\n<title>Streamlab - Video Streaming App</title>\n<meta name=\"description\" content=\"Streamlab - Video Streaming App\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\">\n<meta property=\"og:title\" content=\"Streamlab - Video Streaming App\">\n<meta property=\"og:description\" content=\"Streamlab - Video Streaming App\">\n<meta property=\"og:site_name\" content=\"Streamlab - Video Streaming App\">\n<meta property=\"twitter:title\" content=\"Streamlab - Video Streaming App\">\n<meta property=\"twitter:description\" content=\"Streamlab - Video Streaming App\">\n<link rel=\"icon\" type=\"image/x-icon\" href=\"favicon.svg\">\n<script src=\"https://use.fontawesome.com/7e475b8521.js\"></script>","bodyTags":"","bodyTagsOpen":"","htmlAttrs":"","bodyAttrs":""};
+
+export { _virtual__headStatic as default };
+//# sourceMappingURL=_virtual_head-static.mjs.map
