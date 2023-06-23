@@ -9,7 +9,7 @@ div
 
 	section#listing.container
 		.listing-container 
-			.list(v-for='(item, index) in data?.results' :key='index')
+			.list(v-for='(item, index) in data?.results' :key='index' v-show="!item.known_for")
 				.poster.d-flex.justify-content-center.align-items-center(v-if='!item.poster_path')
 					NuxtLink(:to='item.title ? `/movie/${item?.id}` : `/tv/${item?.id}`')
 						svg(xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewbox='0 0 24 24' fill-rule='evenodd' clip-rule='evenodd' fill='#999')
@@ -17,6 +17,7 @@ div
 					.play(v-if="$device.isDesktop")
 						i(class="fa fa-play-circle" aria-hidden="true")
 				.poster(v-else)
+					.tag {{ item.title ? "movie" : "tv" }}
 					NuxtLink(:to='item.title ? `/movie/${item?.id}` : `/tv/${item?.id}`')
 						img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
 					.play(v-if="$device.isDesktop")
@@ -24,9 +25,10 @@ div
 				.details
 					NuxtLink(:to='item.title ? `/movie/${item?.id}` : `/tv/${item?.id}`')
 						.movie-title {{ item.title ? item.title : item.name }}
-					//- .other.d-flex
-						//- .year {{item.release_date ? item.release_date.split('-')[0] : item.first_air_date.slice(0,4)}}
-						//- .time #[i(class="fa fa-star" aria-hidden="true")] {{`${Math.round(item.vote_average / 10 * 100)}%`}}
+					.other.d-flex
+						.year(v-if='item.release_date') {{ item.release_date.split('-')[0] }}
+						.year(v-else-if='item.first_air_date') {{ item.first_air_date.slice(0,4) }}
+						.time #[i(class="fa fa-star" aria-hidden="true")] {{`${Math.round(item.vote_average / 10 * 100)}%`}}
 </template>
 
 <script setup>
@@ -39,7 +41,7 @@ const { meta } = storeToRefs(settings)
 const searchTerm = term
 const config = useRuntimeConfig()
 const url = computed(() => {
-	return `api/search?query=${searchTerm.value}`
+	return `/api/search?query=${searchTerm.value}`
 })
 
 const {data} = await useFetch(url)

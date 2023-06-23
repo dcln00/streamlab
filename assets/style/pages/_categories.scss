@@ -60,6 +60,19 @@
 				overflow: hidden;
 				position: relative;
 
+				.tag {
+					position: absolute;
+					right: 7px;
+					top: 7px;
+					z-index: 2;
+					background-color: color(accent);
+					padding: 0 .3rem;
+					border-radius: 2px;
+					text-transform: uppercase;
+					font-size: .7rem;
+					font-weight: 700;
+				}
+
 				svg {
 					path {
 						transform: scale(1.5,1.5);

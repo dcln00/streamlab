@@ -33,39 +33,26 @@ section#jumbotron.container-fluid.px-0
 						svg(xmlns='http://www.w3.org/2000/svg' width='55' height='55' viewbox='0 0 55 55')
 							circle(cx='27.5' cy='27.5' r='26.75' fill='none' stroke='#fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5')
 							path(fill='none' stroke='#fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M20.97 40.81L40.64 27.5 20.97 14.19v26.62z')
-	FsLightbox(
-		:toggler="toggler"
-		:slide='slide'
-		:sources="videoArr()"
-		)
+	ClientOnly
+		FsLightbox(
+			:toggler="toggler"
+			:slide='slide'
+			:sources="videoArr()"
+			)
 </template>
 
 <script setup>
-import FsLightbox from "fslightbox-vue/v3"
-
+import FsLightbox from 'fslightbox-vue/v3'
 const toggler = ref(false)
 const slide = ref(1)
 const config = useRuntimeConfig()
 const popular = computed(() => `/api/listings`)
 
-const { data, error } = await useFetch(popular, {
-	cache: 1000 * 60 * 5,
-	lazy: true,
-})
-
-if(error.value) {
-	throw createError({
-			statusCode: 404,
-			statusMessage: 'Page Not Found',
-			fatal: true
-		})
-}
+const { data } = await useFetch(popular)
 
 const id = data.value?.popularMovies.results[0].id
 
-const { data: single } = await useFetch(`/api/movies/${id}`, {
-	immediate: true,
-})
+const { data: single } = await useFetch(`/api/movies/${id}`)
 
 function videoArr() {
 	let youtubeKey = []

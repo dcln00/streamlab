@@ -13,7 +13,8 @@ div
 			.jumbo-image
 				img(:src='`${config.public.imgBackdropBaseUrl}${data?.ids.backdrop_path}`' alt='movie backdrop photo' v-if='data?.ids.backdrop_path')
 			.wrap.container
-				FsLightbox(
+				ClientOnly
+					FsLightbox(
 					:toggler="toggler"
 					:slide='slide'
 					:sources="videoArr()"

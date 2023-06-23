@@ -41,6 +41,7 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'@nuxtjs/device',
 		'nuxt-icon',
+		'@nuxt/devtools',
 	],
 	components: [
 		{ path: '~/components/global' },
@@ -63,6 +64,9 @@ export default defineNuxtConfig({
 			imgBackdropBaseUrl: ''
 		}
 	},
+	devtools: {
+		enabled: false,
+	  },
 	nitro:{
 		preset:'vercel'
 	  }

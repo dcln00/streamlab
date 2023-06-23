@@ -8,8 +8,9 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxt/devtools": "^0.6.2",
     "@nuxtjs/device": "^3.1.0",
-    "nuxt": "3.0.0",
+    "nuxt": "^3.0.0",
     "nuxt-icon": "^0.4.1",
     "prettier": "^2.8.8",
     "sass": "^1.58.3",
