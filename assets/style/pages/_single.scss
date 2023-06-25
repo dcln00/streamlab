@@ -19,8 +19,14 @@
 			text-align: center;
 			padding: 1rem 0;
 
-			a {
+			span {
 				color: color(accent);
+				cursor: pointer;
+				transition: .3s;
+
+				&:hover {
+					opacity: .65;
+				}
 			}
 		}
 	}

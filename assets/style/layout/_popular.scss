@@ -21,9 +21,15 @@
 			
 			.poster {
 				aspect-ratio: 4/6;
-				background-color: gray;
+				background-color: color(placeholder);
 				overflow: hidden;
 				position: relative;
+
+				svg {
+					path {
+						transform: scale(1.5,1.5);
+					}
+				}
 
 				img {
 					width: 100%;

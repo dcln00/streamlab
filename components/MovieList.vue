@@ -5,7 +5,12 @@ section#popular.container
 		.explore.ms-auto #[NuxtLink(:to='heading.url') Explore More]
 	.popular-container
 		.popular(v-for='(item, index) in fetchParams' :key='index')
-			.poster
+			.poster.d-flex.justify-content-center.align-items-center(v-if='!item.poster_path')
+				NuxtLink(:to='`/movie/${item?.id}`')
+					BrokenIcon
+				.play(v-if="$device.isDesktop")
+					i(class="fa fa-play-circle" aria-hidden="true")
+			.poster(v-else)
 				NuxtLink(:to='`/movie/${item?.id}`')
 					img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
 				.play(v-if="$device.isDesktop")

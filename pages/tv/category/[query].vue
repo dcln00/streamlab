@@ -7,7 +7,7 @@ div
 	div(v-else)
 		Head
 			Title {{`${query.charAt(0).toUpperCase() + query.slice(1)} TV Shows - ${meta.title}`}}
-		section#jumbo-page.container-fluid
+		section#jumbo-page.container-fluid.px-0
 			.jumbo-image
 				img(:src='`${config.public.imgBackdropBaseUrl}${data?.results[0].backdrop_path}`' alt='featured TV poster')
 			.wrap.container.d-flex.justify-content-center.align-items-center
@@ -17,7 +17,12 @@ div
 		section#listing.container 
 			.listing-container 
 				.list(v-for='(item, index) in data?.results' :key='index')
-					.poster
+					.poster.d-flex.justify-content-center.align-items-center(v-if='!item.poster_path')
+						NuxtLink(:to='`/tv/${item?.id}`')
+							BrokenIcon
+						.play(v-if="$device.isDesktop")
+							i(class="fa fa-play-circle" aria-hidden="true")
+					.poster(v-else)
 						NuxtLink(:to='`/tv/${item?.id}`')
 							img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
 						.play(v-if="$device.isDesktop")
