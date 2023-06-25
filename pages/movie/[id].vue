@@ -20,7 +20,7 @@ div
 					:sources="videoArr()"
 					)
 				.row.align-items-center
-					.col-sm-4.movie-img.gs-5(v-if='data?.idsposter_path && $device.isDesktop')
+					.col-sm-4.movie-img.gs-5(v-if='data?.ids.poster_path && $device.isDesktop')
 						img(:src='`${config.public.imgBaseUrl}${data?.ids.poster_path}`')
 					.col-sm-8.movie-details.gx-5
 						.score.d-flex.align-items-center
