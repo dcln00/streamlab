@@ -42,17 +42,15 @@ section#jumbotron.container-fluid.px-0
 </template>
 
 <script setup>
+const props = defineProps(['data'])
+const config = useRuntimeConfig()
 import FsLightbox from 'fslightbox-vue/v3'
 const toggler = ref(false)
 const slide = ref(1)
-const config = useRuntimeConfig()
-const popular = computed(() => `/api/listings`)
 
-const { data } = await useFetch(popular)
+const id = computed(() => props?.data.popularMovies.results[0].id)
 
-const id = data.value?.popularMovies.results[0].id
-
-const { data: single } = await useFetch(`/api/movies/${id}`)
+const { data: single } = await useLazyFetch(`/api/movies/${id.value}`)
 
 function videoArr() {
 	let youtubeKey = []

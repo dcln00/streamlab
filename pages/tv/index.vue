@@ -9,20 +9,24 @@ div
 		.wrap.container.d-flex.justify-content-center.align-items-center
 			.title TV Shows
 	
-	LazyTvList(:heading="{name: 'Currently Airing', url: '/tv/category/airing'}" :fetch-params="data?.curAirTv.results.slice(0, 10)")
-	LazyTvList(:heading="{name: 'Popular TV Shows', url: '/tv/category/popular'}" :fetch-params="data?.popularTv.results.slice(0, 10)")
-	LazyTvList(:heading="{name: 'Airing Today', url: '/tv/category/today'}" :fetch-params="data?.onTheAirTv.results.slice(0, 10)")
+	LazyList(:tv="true" :heading="{name: 'Currently Airing', url: '/tv/category/airing'}" :data="data?.curAirTv.results.slice(0, 10)")
+	LazyList(:tv="true" :heading="{name: 'Popular TV Shows', url: '/tv/category/popular'}" :data="data?.popularTv.results.slice(0, 10)")
+	LazyList(:tv="true" :heading="{name: 'Airing Today', url: '/tv/category/today'}" :data="data?.onTheAirTv.results.slice(0, 10)")
 </template>
 
 <script setup>
-import {siteSettings} from '~/store/index'
+import { siteSettings } from '~/store/index'
 import { storeToRefs } from 'pinia'
 const settings = siteSettings()
 const { meta } = storeToRefs(settings)
 
+const nuxtApp = useNuxtApp()
 const config = useRuntimeConfig()
-const lists = computed(() => `/api/listings`)
-const { data } = await useFetch(lists)
+const url = computed(() => `/api/listings`)
+const { data } = await useFetch(url, {
+	key: 'list',
+	getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+})
 </script>
 
 <style scoped>

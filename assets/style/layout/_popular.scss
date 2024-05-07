@@ -25,11 +25,6 @@
 				overflow: hidden;
 				position: relative;
 
-				svg {
-					path {
-						transform: scale(1.5,1.5);
-					}
-				}
 
 				img {
 					width: 100%;
@@ -45,11 +40,6 @@
 					transform: translate(-50%, 0%);
 					transition: .5s;
 					opacity: 0;
-
-					i {
-						color: color(white);
-						font-size: 5rem;
-					}
 				}
 
 				&:hover > .play {
@@ -90,52 +80,19 @@
 		}
 	}
 
-	
-	.left {
-		@include left;
-		background-color: white;
-		color: color(main-color);
-		border-radius: 50px;
-		aspect-ratio: 1;
-		transform: translateY(-90%);
-		padding: 1.2rem 2rem;
-		left: -25px;
-	}
-
-	.right {
-		@include right;
-		background-color: white;
-		color: color(main-color);
-		border-radius: 50px;
-		aspect-ratio: 1;
-		transform: translateY(-90%);
-		padding: 1.2rem 2rem;
-		right: -25px;
-	}
-
-
 	.trending-container {
 		padding-top: 2.5rem;
-		white-space: nowrap;
-		overflow-x: scroll;
-		scrollbar-width: none;
 
 		.trending {
-			display: inline-block;
-			margin-right: 1.5rem;
-
-			&:last-child {
-				margin-right: 0;
-			}
 
 			.poster {
-				width: 450px;
+				// width: 450px;
 				height: 245px;
 				background-color: color(placeholder);
 				margin-bottom: 1rem;
 				overflow: hidden;
 				position: relative;
-				border-radius: 25px;
+				border-radius: 5px;
 
 				img {
 					width: 100%;
@@ -151,11 +108,6 @@
 					transform: translate(-50%, 0%);
 					transition: .5s;
 					opacity: 0;
-
-					i {
-						color: color(white);
-						font-size: 5rem;
-					}
 				}
 
 				&:hover > .play {

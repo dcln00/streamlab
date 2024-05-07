@@ -9,9 +9,9 @@ div
 		.wrap.container.d-flex.justify-content-center.align-items-center
 			.title Movies
 
-	LazyMovieList(:heading="{name:'Trending Movies', url: '/movie/category/trending'}" :show='true' :fetch-params='data?.trendingMovies.results.slice(0, 15)')
-	LazyMovieList(:heading="{name:'Popular Movies', url: '/movie/category/popular'}" :show='true' :fetch-params='data?.popularMovies.results.slice(0, 15)')
-	LazyMovieList(:heading="{name:'Coming Soon', url: '/movie/category/upcoming'}" :show='false' :fetch-params='data?.upcomingMovies.results.slice(0, 15)')
+	LazyList(:heading="{name:'Trending Movies', url: '/movie/category/trending'}" :show='true' :data='data?.trendingMovies.results.slice(0, 15)')
+	LazyList(:heading="{name:'Popular Movies', url: '/movie/category/popular'}" :show='true' :data='data?.popularMovies.results.slice(0, 15)')
+	LazyList(:heading="{name:'Coming Soon', url: '/movie/category/upcoming'}" :data='data?.upcomingMovies.results.slice(0, 15)')
 </template>
 
 <script setup>
@@ -19,17 +19,14 @@ import {siteSettings} from '~/store/index'
 import { storeToRefs } from 'pinia'
 const settings = siteSettings()
 const { meta } = storeToRefs(settings)
-
 const config = useRuntimeConfig()
-const lists = computed(() => `/api/listings`)
-const { data } = await useFetch(lists)
 
-
-// const list = [
-// 	{name: 'Trending Movies', url: '/movie/category/trending', show: true, params: data.value.trendingMovies?.results.slice(0, 15)},
-// 	{name: 'Popular Movies', url: '/movie/category/popular', show: true, params: data.value.popularMovies?.results.slice(0, 15)},
-// 	{name: 'Coming Soon', url: '/movie/category/upcoming', show: false, params: data.value.upcomingMovies?.results.slice(0, 15)},
-// ]
+const nuxtApp = useNuxtApp()
+const url = computed(() => `/api/listings`)
+const { data } = await useFetch(url, {
+	key: 'list',
+	getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+})
 </script>
 
 <style scoped>

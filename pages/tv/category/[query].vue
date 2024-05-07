@@ -21,24 +21,38 @@ div
 						NuxtLink(:to='`/tv/${item?.id}`')
 							BrokenIcon
 						.play(v-if="$device.isDesktop")
-							i(class="fa fa-play-circle" aria-hidden="true")
+							Icon(name="material-symbols-light:play-circle-outline-rounded" size="4.5em")
 					.poster(v-else)
 						NuxtLink(:to='`/tv/${item?.id}`')
 							img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
 						.play(v-if="$device.isDesktop")
-							i(class="fa fa-play-circle" aria-hidden="true")
+							Icon(name="material-symbols-light:play-circle-outline-rounded" size="4.5em")
 					.details
 						NuxtLink(:to='`/tv/${item.id}`')
 							.movie-title {{ item.name }}
 						.other.d-flex
-							.time #[i(class="fa fa-star" aria-hidden="true")] {{`${Math.round(item.vote_average / 10 * 100)}%`}}
+							.time.d-flex.align-items.center #[Icon(name="material-symbols:star-rate-rounded" size="1.2em")] {{`${Math.round(item.vote_average / 10 * 100)}%`}}
 </template>
 
 <script setup>
 const route = useRoute()
 const config = useRuntimeConfig()
-const query = computed(() => route.params.query)
-const { data, error, pending } = useFetch(`/api/tv/category/${query.value}`)
+const nuxtApp = useNuxtApp()
+const query = route.params.query
+const { data, error, pending } = useFetch(`/api/tv/category/${query}`, {
+	key: `${query}-tv`,
+	getCachedData: (key) => {
+		if (!nuxtApp.isHydrating && nuxtApp.payload.data[key]) {
+			return nuxtApp.payload.data[key]
+		}
+
+		if (nuxtApp.static.data[key]) {
+			return nuxtApp.static.data[key]
+		}
+
+		return null
+	}
+})
 
 import {siteSettings} from '~/store/index'
 import { storeToRefs } from 'pinia'

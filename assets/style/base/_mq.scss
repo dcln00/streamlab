@@ -85,13 +85,14 @@
 			.trending {
 				margin-right: $column-gap;
 				.poster {
-					width: calc(450px / 2);
-					height: calc(245px / 2);
+					// width: calc(450px / 2);
+					// height: calc(245px / 2);
+					height: 205px;
 					border-radius: 15px;
 
 					.details {
 						.movie-title {
-							font-size: 1rem;
+							font-size: 1.2rem;
 						}
 					}
 				}

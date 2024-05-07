@@ -144,10 +144,11 @@
 			.button {
 				padding: 1rem 1.5rem;
 				background-color: color(accent);
-				display: inline-block;
+				width: fit-content;
 				border-radius: 5px;
 				font-weight: 700;
 				cursor: pointer;
+				column-gap: 10px;
 			}
 		}
 
@@ -368,12 +369,6 @@
 				overflow: hidden;
 				position: relative;
 
-				svg {
-					path {
-						transform: scale(1.5,1.5);
-					}
-				}
-
 				img {
 					width: 100%;
 					height: 100%;
@@ -388,11 +383,6 @@
 					transform: translate(-50%, 0%);
 					transition: .5s;
 					opacity: 0;
-
-					i {
-						color: color(white);
-						font-size: 5rem;
-					}
 				}
 
 				&:hover > .play {

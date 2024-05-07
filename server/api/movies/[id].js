@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-	const id = [...event.node.req.url.split('/')].pop()
+	const { id } = getRouterParams(event)
 	const config = useRuntimeConfig()
 	
 		const ids = await $fetch(`${config.apiBaseUrl}/movie/${id}?api_key=${config.apiKey}`, {

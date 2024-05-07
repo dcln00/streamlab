@@ -1,14 +1,17 @@
 <template lang="pug">
 div
-	LazyJumbotron
-	LazyTrending
-	LazyMovieList(:heading="{name: 'Popular Movies', url: '/movie/category/popular'}" :show='true' :fetch-params="data?.popularMovies.results.slice(1, 11)")
-	LazyTvList(:heading="{name: 'Popular TV Shows', url: '/tv/category/popular'}" :fetch-params="data?.popularTv.results.slice(0, 10)")
-	LazyMovieList(:heading="{name: 'Coming Soon', url: '/movie/category/upcoming'}" :show='false' :fetch-params="data?.upcomingMovies.results.slice(0, 10)")
+	LazyJumbotron(:data="data")
+	LazyTrending(:data="data")
+	LazyList(:heading="{name: 'Popular Movies', url: '/movie/category/popular'}" :show='true' :data="data?.popularMovies.results.slice(1, 11)")
+	LazyList(:tv="true" :heading="{name: 'Popular TV Shows', url: '/tv/category/popular'}" :data="data?.popularTv.results.slice(0, 10)")
+	LazyList(:heading="{name: 'Coming Soon', url: '/movie/category/upcoming'}" :data="data?.upcomingMovies.results.slice(0, 10)")
 </template>
 
 <script setup>
-const config = useRuntimeConfig()
-const lists = computed(() => `/api/listings`)
-const { data } = await useFetch(lists)
+const nuxtApp = useNuxtApp()
+const url = computed(() => `/api/listings`)
+const { data } = await useFetch(url.value, {
+	key: 'list',
+	getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+})
 </script>

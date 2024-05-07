@@ -34,8 +34,7 @@ div
 							.genre(v-for='(item, index) in data?.ids.genres'  :key='index' v-if="$device.isDesktop") {{ item.name }}
 						.genre(v-for='(item, index) in data?.ids.genres.slice(0, 3)'  :key='index' v-if="$device.isMobileOrTablet") {{ item.name }}
 						.description {{ data?.ids.overview }}
-						.button(@click="openCustom(1)") #[i(class="fa fa-play" aria-hidden="true")] Watch Trailer
-
+						.button.d-flex.align-items-center(@click="openCustom(1)") #[Icon(name="mdi:eye-outline" size="1.2em")] Watch Trailer
 		
 		section#credits.container
 			nav#pills-tab.nav.nav-pills(role='tablist')
@@ -44,9 +43,6 @@ div
 
 			#pills-tabContent.tab-content
 				#cast.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='cast-tab')
-					.controls(v-show="data?.credits.cast.length > 5" v-if="$device.isDesktop")
-							.left(@click="leftScroll") #[i(class="fa fa-angle-left" aria-hidden="true")]
-							.right(@click="rightScroll") #[i(class="fa fa-angle-right" aria-hidden="true")]
 					.credits-container 
 						.credits(v-for='(item, index) in data?.credits.cast.slice(0, 10)' :key='index')
 							.actor.d-flex.justify-content-center.align-items-center(v-if='!item.profile_path')
@@ -81,36 +77,34 @@ div
 						.videos(v-for='(item, index) in data?.videos.results' :key='index' v-show='item.type === "Trailer" || item.type === "Teaser"' v-else) 
 							img(:src='`https://img.youtube.com/vi/${item.key}/hqdefault.jpg`' @click="openCustom(videoArr().indexOf(`https://www.youtube.com/watch?v=${item.key}`) + 1)")
 							.play(@click="toggler = !toggler")
-								i(class="fa fa-youtube-play" aria-hidden="true")
+								Icon(name="material-symbols-light:play-circle-outline-rounded" size="4.5em")
 							//- iframe(width='100%', height='100%', :src="`https://www.youtube.com/embed/${item.key}?controls=0`", title="YouTube video player", frameborder="0", allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share", allowfullscreen)
 
 		section#rec.container(v-show='data?.rec.results.length != 0')
 			.title More like this
-			.controls(v-show="data?.rec.results.length > 5" v-if="$device.isDesktop")
-				.left(@click="recLeft") #[i(class="fa fa-angle-left" aria-hidden="true")]
-				.right(@click="recRight") #[i(class="fa fa-angle-right" aria-hidden="true")]
 			.rec-container 
 				.rec(v-for='(item, index) in data?.rec.results.slice(0, 10)' :key='index')
 					.poster.d-flex.justify-content-center.align-items-center(v-if='!item.poster_path')
 						NuxtLink(:to='`/movie/${item?.id}`')
 							BrokenIcon
 						.play(v-if="$device.isDesktop")
-							i(class="fa fa-play-circle" aria-hidden="true")
+							Icon(name="material-symbols-light:play-circle-outline-rounded" size="4.5em")
 					.poster(v-else)
 						NuxtLink(:to='`/movie/${item?.id}`')
 							img(:src='`${config.public.imgBaseUrl}${item.poster_path}`')
 						.play(v-if="$device.isDesktop")
-							i(class="fa fa-play-circle" aria-hidden="true")
+							Icon(name="material-symbols-light:play-circle-outline-rounded" size="4.5em")
 					.details
 						NuxtLink(:to='`/movie/${item?.id}`')
 							.movie-title {{ item.title }}
 						.other
-							.time #[i(class="fa fa-star" aria-hidden="true")] {{ `${Math.round(item.vote_average / 10 * 100)}%` }}
+							.time.d-flex.align-items.center #[Icon(name="material-symbols:star-rate-rounded" size="1.2em")] {{ `${Math.round(item.vote_average / 10 * 100)}%` }}
 
 </template>
 
 <script setup>
 import FsLightbox from "fslightbox-vue/v3"
+const nuxtApp = useNuxtApp()
 const toggler = ref(false)
 const slide = ref(1)
 const route = useRoute()
@@ -119,6 +113,18 @@ const config = useRuntimeConfig()
 const movieId = computed(() => route.params.id)
 const { data, pending, error } = await useFetch(`/api/movies/${movieId.value}`, {
 	lazy: true,
+	key: `movie-${movieId.value}`,
+	getCachedData: (key) => {
+		if (!nuxtApp.isHydrating && nuxtApp.payload.data[key]) {
+			return nuxtApp.payload.data[key]
+		}
+
+		if (nuxtApp.static.data[key]) {
+			return nuxtApp.static.data[key]
+		}
+
+		return null
+	}
 })
 
 import {siteSettings} from '~/store/index'
@@ -161,21 +167,4 @@ const options = [
 ]
 
 const videoOptions = ['all', 'trailer', 'teaser', 'clip', 'featurette', 'behind the scenes']
-
-
-function leftScroll() {
-        document.querySelector(".credits-container").scrollBy(-400, 0)
-      }
-
-function rightScroll() {
-        document.querySelector(".credits-container").scrollBy(400, 0)
-	}
-
-function recLeft() {
-	document.querySelector(".rec-container").scrollBy(-400, 0)
-}
-
-function recRight() {
-	document.querySelector(".rec-container").scrollBy(400, 0)	
-}
 </script>
