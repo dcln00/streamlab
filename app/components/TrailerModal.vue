@@ -65,7 +65,6 @@ Teleport(to="body")
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							allowfullscreen
 						)
-				
 </template>
 
 <style scoped>
