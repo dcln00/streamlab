@@ -23,11 +23,56 @@ const page = computed(() => {
 
 const { data, status } = await tmdb.fetchTvCategory(slug, page)
 
-useHead({
-	title: () => `${meta.value.siteName} - ${category.value?.title ?? 'TV Shows'}`,
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || '').replace(/\/$/, '')
+const basePath = computed(() => `/tv/category/${slug.value}`)
+const pagedPath = computed(() =>
+	page.value > 1 ? `${basePath.value}?page=${page.value}` : basePath.value
+)
+
+useSeo({
+	title: `${category.value?.title}${page.value > 1 ? ` (Page ${page.value})` : ''}`,
+	description: category.value?.description ?? meta.value.siteDescription,
+	path: pagedPath.value,
 })
 
 const totalPages = computed(() => Math.min(data.value?.total_pages ?? 1, 500))
+
+useHead({
+	link: () => {
+		const links: Array<{ rel: string; href: string }> = []
+		if (page.value > 1) {
+			const prevPage = page.value - 1
+			links.push({
+				rel: 'prev',
+				href: `${siteUrl}${basePath.value}${prevPage > 1 ? `?page=${prevPage}` : ''}`,
+			})
+		}
+		if (page.value < totalPages.value) {
+			links.push({
+				rel: 'next',
+				href: `${siteUrl}${basePath.value}?page=${page.value + 1}`,
+			})
+		}
+		return links
+	},
+	script: [
+		{
+			type: 'application/ld+json',
+			innerHTML: () =>
+				JSON.stringify(
+					breadcrumbSchema(siteUrl, [
+						{ name: 'Home', path: '/' },
+						{ name: 'TV Shows', path: '/tv' },
+						{
+							name: category.value?.title ?? 'Category',
+							path: basePath.value,
+						},
+					])
+				),
+		},
+	],
+})
 const loading = computed(() => status.value === 'pending')
 
 const goToPage = (next: number): void => {

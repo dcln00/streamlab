@@ -7,6 +7,8 @@ export default defineNuxtConfig({
 		"@nuxt/image",
 		"@nuxtjs/tailwindcss",
 		"@vueuse/nuxt",
+		"@nuxtjs/sitemap",
+		"@nuxtjs/robots",
 	],
 	hooks: {
 		"nitro:config"(config) {
@@ -24,12 +26,24 @@ export default defineNuxtConfig({
 			weights: [100, 200, 300, 400, 500, 600, 700, 800, 900],
 		},
 	},
+	site: {
+		url: process.env.NUXT_PUBLIC_SITE_URL || "https://streamlab.vercel.app",
+		name: "Streamlab",
+	},
+	sitemap: {
+		sources: ["/api/__sitemap__/urls"],
+	},
+	robots: {
+		disallow: ["/search"],
+	},
 	runtimeConfig: {
 		apiKey: "",
 		apiBaseUrl: "",
 		public: {
 			imgBaseUrl: "",
 			imgBackdropBaseUrl: "",
+			siteUrl:
+				process.env.NUXT_PUBLIC_SITE_URL || "https://streamlab.vercel.app",
 		},
 	},
 	vite: {

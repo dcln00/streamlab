@@ -30,8 +30,36 @@ if (!details.value) {
 	})
 }
 
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || '').replace(/\/$/, '')
+
+useSeo({
+	title: details.value.name,
+	description: (details.value.overview || meta.value.siteDescription).slice(0, 200),
+	image: details.value.backdrop_path
+		? tmdb.backdropUrl(details.value.backdrop_path)
+		: tmdb.posterUrl(details.value.poster_path),
+	path: `/tv/${details.value.id}`,
+	type: 'video.tv_show',
+})
+
 useHead({
-	title: () => `${details.value?.name ?? 'TV Show'} - ${meta.value.siteName}`,
+	script: [
+		{
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify(tvSchema(details.value, siteUrl)),
+		},
+		{
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify(
+				breadcrumbSchema(siteUrl, [
+					{ name: 'Home', path: '/' },
+					{ name: 'TV Shows', path: '/tv' },
+					{ name: details.value.name, path: `/tv/${details.value.id}` },
+				])
+			),
+		},
+	],
 })
 
 const backdrop = computed(() =>

@@ -67,22 +67,6 @@ export default function () {
 	const fetchOnTheAirTv = () => fetchTvList('tv/on_the_air', 'tmdb-tv-on-the-air')
 	const fetchAiringTodayTv = () => fetchTvList('tv/airing_today', 'tmdb-tv-airing-today')
 
-	const movieCategories: Record<string, { endpoint: string; title: string }> = {
-		popular: { endpoint: 'movie/popular', title: 'Popular Movies' },
-		trending: { endpoint: 'trending/movie/week', title: 'Trending This Week' },
-		'top-rated': { endpoint: 'movie/top_rated', title: 'Top Rated Movies' },
-		upcoming: { endpoint: 'movie/upcoming', title: 'Coming Soon' },
-		'now-playing': { endpoint: 'movie/now_playing', title: 'Now Playing' },
-	}
-
-	const tvCategories: Record<string, { endpoint: string; title: string }> = {
-		popular: { endpoint: 'tv/popular', title: 'Popular TV Shows' },
-		trending: { endpoint: 'trending/tv/week', title: 'Trending This Week' },
-		'top-rated': { endpoint: 'tv/top_rated', title: 'Top Rated TV Shows' },
-		'on-the-air': { endpoint: 'tv/on_the_air', title: 'On The Air' },
-		'airing-today': { endpoint: 'tv/airing_today', title: 'Airing Today' },
-	}
-
 	const getMovieCategory = (slug: string) => movieCategories[slug] ?? null
 	const getTvCategory = (slug: string) => tvCategories[slug] ?? null
 

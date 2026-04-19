@@ -7,8 +7,11 @@ const tmdb = useTmdb()
 const route = useRoute()
 const router = useRouter()
 
-useHead({
-	title: () => `${meta.value.siteName} - Search`,
+useSeo({
+	title: 'Search',
+	description: 'Search movies and TV shows on Streamlab.',
+	path: '/search',
+	noindex: true,
 })
 
 const initialQuery = (() => {

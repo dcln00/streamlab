@@ -5,8 +5,10 @@ import type { Movie } from '~/types/tmdb'
 const meta = useMeta()
 const tmdb = useTmdb()
 
-useHead({
-	title: () => `${meta.value.siteName} - TV Shows`,
+useSeo({
+	title: 'TV Shows',
+	description: 'Browse popular, trending, and top-rated TV shows on Streamlab.',
+	path: '/tv',
 })
 
 const [trending, popular, topRated, onTheAir, airingToday] = await Promise.all([
@@ -67,10 +69,10 @@ div
 		:shows="airingToday.data.value?.results ?? []"
 		:loading="airingToday.status.value === 'pending'"
 	)
-	TvRail(
-		title="Top Rated"
-		view-all-to="/tv/category/top-rated"
-		:shows="topRated.data.value?.results ?? []"
-		:loading="topRated.status.value === 'pending'"
-	)
+	//- TvRail(
+	//- 	title="Top Rated"
+	//- 	view-all-to="/tv/category/top-rated"
+	//- 	:shows="topRated.data.value?.results ?? []"
+	//- 	:loading="topRated.status.value === 'pending'"
+	//- )
 </template>

@@ -3,8 +3,10 @@
 const meta = useMeta()
 const tmdb = useTmdb()
 
-useHead({
-	title: () => `${meta.value.siteName} - Movies`,
+useSeo({
+	title: 'Movies',
+	description: 'Browse popular, trending, top-rated, upcoming, and now-playing movies on Streamlab.',
+	path: '/movie',
 })
 
 const [trending, popular, topRated, upcoming, nowPlaying] = await Promise.all([
@@ -39,12 +41,12 @@ div
 		:movies="nowPlaying.data.value?.results ?? []"
 		:loading="nowPlaying.status.value === 'pending'"
 	)
-	MovieRail(
-		title="Top Rated"
-		view-all-to="/movie/category/top-rated"
-		:movies="topRated.data.value?.results ?? []"
-		:loading="topRated.status.value === 'pending'"
-	)
+	//- MovieRail(
+	//- 	title="Top Rated"
+	//- 	view-all-to="/movie/category/top-rated"
+	//- 	:movies="topRated.data.value?.results ?? []"
+	//- 	:loading="topRated.status.value === 'pending'"
+	//- )
 	MovieRail(
 		title="Coming Soon"
 		view-all-to="/movie/category/upcoming"

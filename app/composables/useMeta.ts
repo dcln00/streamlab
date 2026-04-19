@@ -3,10 +3,9 @@ export default function () {
 	const meta = useState("meta", () => ({
 		siteName: 'Streamlab',
 		siteDescription:
-			'Streamlab — a streaming lab for modern media experiences.',
-		siteUrl: 'https://streamlab.app',
-		ogSiteName:
-			'Video Streaming App'
+			'Watch trailers and browse movies and TV shows on Streamlab, a TMDB-powered streaming catalog.',
+		siteUrl: 'https://streamlab.vercel.app',
+		ogSiteName: 'Video Streaming App',
 	}))
 
 	return meta

@@ -2,9 +2,22 @@
 <script setup lang="ts">
 const meta = useMeta()
 const tmdb = useTmdb()
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || '').replace(/\/$/, '')
+
+useSeo({
+	title: meta.value.ogSiteName,
+	description: meta.value.siteDescription,
+	path: '/',
+})
 
 useHead({
-	title: () => `${meta.value.siteName} - ${meta.value.ogSiteName}`,
+	script: [
+		{
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify(websiteSchema(siteUrl, meta.value.siteName)),
+		},
+	],
 })
 
 const [trending, popular, topRated, upcoming, nowPlaying] = await Promise.all([
