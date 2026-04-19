@@ -35,10 +35,20 @@ export default function () {
 			default: emptyMovieList,
 		})
 
+	const tvOriginAllowlist = ['US', 'GB', 'CA']
+
+	const filterTvByOrigin = (res: TvListResponse): TvListResponse => ({
+		...res,
+		results: (res.results ?? []).filter((s) =>
+			s.origin_country?.some((c) => tvOriginAllowlist.includes(c))
+		),
+	})
+
 	const fetchTvList = (endpoint: string, key: string) =>
 		useFetch<TvListResponse>(`/api/tmdb/${endpoint}`, {
 			key,
 			default: emptyTvList,
+			transform: filterTvByOrigin,
 		})
 
 	const fetchTrending = (period: TrendingPeriod = 'week') =>
@@ -56,6 +66,52 @@ export default function () {
 	const fetchTopRatedTv = () => fetchTvList('tv/top_rated', 'tmdb-tv-top-rated')
 	const fetchOnTheAirTv = () => fetchTvList('tv/on_the_air', 'tmdb-tv-on-the-air')
 	const fetchAiringTodayTv = () => fetchTvList('tv/airing_today', 'tmdb-tv-airing-today')
+
+	const movieCategories: Record<string, { endpoint: string; title: string }> = {
+		popular: { endpoint: 'movie/popular', title: 'Popular Movies' },
+		trending: { endpoint: 'trending/movie/week', title: 'Trending This Week' },
+		'top-rated': { endpoint: 'movie/top_rated', title: 'Top Rated Movies' },
+		upcoming: { endpoint: 'movie/upcoming', title: 'Coming Soon' },
+		'now-playing': { endpoint: 'movie/now_playing', title: 'Now Playing' },
+	}
+
+	const tvCategories: Record<string, { endpoint: string; title: string }> = {
+		popular: { endpoint: 'tv/popular', title: 'Popular TV Shows' },
+		trending: { endpoint: 'trending/tv/week', title: 'Trending This Week' },
+		'top-rated': { endpoint: 'tv/top_rated', title: 'Top Rated TV Shows' },
+		'on-the-air': { endpoint: 'tv/on_the_air', title: 'On The Air' },
+		'airing-today': { endpoint: 'tv/airing_today', title: 'Airing Today' },
+	}
+
+	const getMovieCategory = (slug: string) => movieCategories[slug] ?? null
+	const getTvCategory = (slug: string) => tvCategories[slug] ?? null
+
+	const fetchMovieCategory = (slug: Ref<string>, page: Ref<number>) =>
+		useAsyncData<MovieListResponse>(
+			'tmdb-movie-category',
+			() => {
+				const cat = movieCategories[slug.value]
+				if (!cat) return Promise.resolve(emptyMovieList())
+				return $fetch<MovieListResponse>(`/api/tmdb/${cat.endpoint}`, {
+					query: { page: page.value },
+				})
+			},
+			{ watch: [slug, page], default: emptyMovieList }
+		)
+
+	const fetchTvCategory = (slug: Ref<string>, page: Ref<number>) =>
+		useAsyncData<TvListResponse>(
+			'tmdb-tv-category',
+			async () => {
+				const cat = tvCategories[slug.value]
+				if (!cat) return emptyTvList()
+				const res = await $fetch<TvListResponse>(`/api/tmdb/${cat.endpoint}`, {
+					query: { page: page.value },
+				})
+				return filterTvByOrigin(res)
+			},
+			{ watch: [slug, page], default: emptyTvList }
+		)
 
 	const fetchMovieImages = (movieId: Ref<number | null | undefined>) =>
 		useAsyncData<MovieImagesResponse>(
@@ -244,6 +300,10 @@ export default function () {
 		fetchTopRatedTv,
 		fetchOnTheAirTv,
 		fetchAiringTodayTv,
+		fetchMovieCategory,
+		fetchTvCategory,
+		getMovieCategory,
+		getTvCategory,
 		fetchMovieImages,
 		fetchMovieDetails,
 		fetchMovieCredits,

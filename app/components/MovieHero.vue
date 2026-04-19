@@ -22,7 +22,13 @@ const [{ data: images }, { data: details }] = await Promise.all([
 
 const runtime = computed(() => tmdb.formatRuntime(details.value?.runtime))
 
+const route = useRoute()
+const hideGallery = computed(
+	() => route.path === '/movie' || route.path === '/tv'
+)
+
 const galleryItems = computed(() => {
+	if (hideGallery.value) return []
 	const heroPath = props.movie?.backdrop_path
 	return (images.value?.backdrops ?? [])
 		.filter((img) => img.file_path !== heroPath)
@@ -74,7 +80,7 @@ section(class="relative w-full h-screen overflow-hidden")
 				span(v-if="year") {{ year }}
 				span •
 				span(class="tracking-wide text-brand-accent font-medium") Featured
-			h1(class="font-oswald text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tighter text-white leading-none") {{ movie.title }}
+			h1(:class="['font-oswald text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white leading-none', hideGallery ? 'lg:text-6xl' : 'lg:text-7xl']") {{ movie.title }}
 			div(
 				v-if="runtime"
 				class="runtime mt-5 inline-flex items-center gap-2 text-sm text-cinema-muted"

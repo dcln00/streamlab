@@ -43,7 +43,7 @@ header(
 					v-for="link in navLinks"
 					:key="link.to"
 					:to="link.to"
-					class="text-sm font-medium text-white/80 hover:text-white transition-colors"
+					class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors"
 				) {{ link.label }}
 		div(class="ms-auto flex items-center gap-3")
 			button(
@@ -54,6 +54,11 @@ header(
 </template>
 
 <style scoped>
+.nav-link.router-link-active,
+.nav-link.router-link-exact-active {
+	color: #098443;
+}
+
 .nav-enter-active {
 	transition: opacity 300ms ease-out, transform 300ms ease-out;
 }

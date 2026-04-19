@@ -6,6 +6,7 @@ defineProps<{
 	title: string
 	movies: Movie[]
 	loading?: boolean
+	viewAllTo?: string
 }>()
 
 const railRef = ref<HTMLElement | null>(null)
@@ -21,7 +22,13 @@ const scrollBy = (direction: 1 | -1): void => {
 <template lang="pug">
 section(class="py-8")
 	div(class="container flex items-center justify-between mb-4")
-		h2(class="font-oswald text-2xl md:text-3xl uppercase tracking-tight font-medium text-white") {{ title }}
+		div(class="flex items-center gap-4")
+			h2(class="font-oswald text-2xl md:text-3xl uppercase tracking-tight font-medium text-white") {{ title }}
+			NuxtLink(
+				v-if="viewAllTo"
+				:to="viewAllTo"
+				class="text-sm text-brand-accent hover:brightness-110 transition-all"
+			) View all
 		div(class="hidden md:flex gap-2")
 			button(
 				type="button"
