@@ -39,7 +39,7 @@ Teleport(to="body")
 	Transition(name="trailer")
 		div(
 			v-if="trailer.isOpen.value"
-			class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+			class="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
 			@click.self="trailer.close()"
 		)
 			div(class="relative w-full max-w-5xl")
