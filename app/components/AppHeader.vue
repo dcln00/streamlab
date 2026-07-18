@@ -36,7 +36,7 @@ header(
 	div(class="container flex items-center")
 		NuxtLink(to="/" class="font-oswald text-3xl font-bold uppercase tracking-tight text-white")
 			svg-logo(class="h-6 w-auto fill-current")
-		svg-hamburger(class="ms-6 size-6" @click="show = !show")
+		svg-hamburger(class="hidden md:block ms-6 size-6" @click="show = !show")
 		Transition(name="nav")
 			nav(v-if="show" class="ms-6 hidden md:flex items-center gap-8")
 				NuxtLink(

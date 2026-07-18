@@ -5,7 +5,7 @@ const year = new Date().getFullYear()
 </script>
 
 <template lang="pug">
-footer(class="bg-cinema-surface py-6")
+footer(class="hidden md:block bg-cinema-surface py-6")
 	div(class="container flex items-center text-xs text-cinema-muted")
 		svg-logo(class="h-5 w-auto")
 		div(class="ms-auto flex items-center gap-6")
