@@ -5,10 +5,11 @@ const tmdb = useTmdb()
 const config = useRuntimeConfig()
 const siteUrl = String(config.public.siteUrl || '').replace(/\/$/, '')
 
-useSeo({
+useSeoMeta({
 	title: meta.value.ogSiteName,
+	ogTitle: meta.value.ogSiteName,
 	description: meta.value.siteDescription,
-	path: '/',
+	ogDescription: meta.value.siteDescription,
 })
 
 useHead({
@@ -20,43 +21,25 @@ useHead({
 	],
 })
 
-const [trending, popular, topRated, upcoming, nowPlaying] = await Promise.all([
+const [trendingMovies, trendingShows] = await Promise.all([
 	tmdb.fetchTrending('week'),
-	tmdb.fetchPopular(),
-	tmdb.fetchTopRated(),
-	tmdb.fetchUpcoming(),
-	tmdb.fetchNowPlaying(),
+	tmdb.fetchTrendingTv('week'),
 ])
 
-const heroMovie = computed(() => trending.data.value?.results[0] ?? null)
+const heroMovie = computed(() => trendingMovies.data.value?.results[0] ?? null)
 </script>
 
 <template lang="pug">
 div
 	MovieHero(:movie="heroMovie")
 	MovieRail(
-		title="Trending This Week"
-		:movies="trending.data.value?.results ?? []"
-		:loading="trending.status.value === 'pending'"
+		title="Trending Movies"
+		:movies="trendingMovies.data.value?.results ?? []"
+		:loading="trendingMovies.status.value === 'pending'"
 	)
-	MovieRail(
-		title="Now Playing"
-		:movies="nowPlaying.data.value?.results ?? []"
-		:loading="nowPlaying.status.value === 'pending'"
-	)
-	MovieRail(
-		title="Popular"
-		:movies="popular.data.value?.results ?? []"
-		:loading="popular.status.value === 'pending'"
-	)
-	//- MovieRail(
-	//- 	title="Top Rated"
-	//- 	:movies="topRated.data.value?.results ?? []"
-	//- 	:loading="topRated.status.value === 'pending'"
-	//- )
-	MovieRail(
-		title="Coming Soon"
-		:movies="upcoming.data.value?.results ?? []"
-		:loading="upcoming.status.value === 'pending'"
+	TvRail(
+		title="Trending Shows"
+		:shows="trendingShows.data.value?.results ?? []"
+		:loading="trendingShows.status.value === 'pending'"
 	)
 </template>

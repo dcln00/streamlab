@@ -49,7 +49,7 @@ section(class="py-8")
 			) ›
 	div(
 		ref="railRef"
-		class="container hide-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4"
+		class="container hide-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-px-4 pb-4"
 	)
 		template(v-if="loading")
 			div(

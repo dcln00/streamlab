@@ -16,10 +16,11 @@ export default defineCachedEventHandler(
 		}
 
 		const query = getQuery(event)
+		const rewrite = rewriteTmdbListPath(path)
 
 		try {
-			return await $fetch(`${apiBaseUrl}/${path}`, {
-				query: { ...query, api_key: apiKey, language: 'en-US' },
+			return await $fetch(`${apiBaseUrl}/${rewrite?.path ?? path}`, {
+				query: { ...query, ...rewrite?.query, api_key: apiKey, language: 'en-US' },
 			})
 		} catch (err) {
 			const status = (err as { statusCode?: number }).statusCode ?? 502

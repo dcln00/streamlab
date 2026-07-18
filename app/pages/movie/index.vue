@@ -1,18 +1,20 @@
 // app/pages/movie/index.vue
 <script setup lang="ts">
-const meta = useMeta()
 const tmdb = useTmdb()
 
-useSeo({
+const description =
+	'Browse popular, trending, top-rated, upcoming, and now-playing movies on Streamlab.'
+
+useSeoMeta({
 	title: 'Movies',
-	description: 'Browse popular, trending, top-rated, upcoming, and now-playing movies on Streamlab.',
-	path: '/movie',
+	ogTitle: 'Movies',
+	description,
+	ogDescription: description,
 })
 
-const [trending, popular, topRated, upcoming, nowPlaying] = await Promise.all([
+const [trending, popular, upcoming, nowPlaying] = await Promise.all([
 	tmdb.fetchTrending('week'),
 	tmdb.fetchPopular(),
-	tmdb.fetchTopRated(),
 	tmdb.fetchUpcoming(),
 	tmdb.fetchNowPlaying(),
 ])
@@ -41,12 +43,6 @@ div
 		:movies="nowPlaying.data.value?.results ?? []"
 		:loading="nowPlaying.status.value === 'pending'"
 	)
-	//- MovieRail(
-	//- 	title="Top Rated"
-	//- 	view-all-to="/movie/category/top-rated"
-	//- 	:movies="topRated.data.value?.results ?? []"
-	//- 	:loading="topRated.status.value === 'pending'"
-	//- )
 	MovieRail(
 		title="Coming Soon"
 		view-all-to="/movie/category/upcoming"

@@ -50,7 +50,6 @@ export default function () {
 		close,
 		toggle,
 		has,
-		add,
 		remove,
 		toggleItem,
 	}

@@ -27,10 +27,6 @@ export interface Genre {
 	name: string
 }
 
-export interface GenreListResponse {
-	genres: Genre[]
-}
-
 export type TrendingPeriod = 'day' | 'week'
 
 export interface TmdbImage {
@@ -82,15 +78,43 @@ export interface TvListResponse {
 	total_results: number
 }
 
+export interface TvSeasonSummary {
+	id: number
+	season_number: number
+	name: string
+	episode_count: number
+	air_date: string | null
+	poster_path: string | null
+}
+
 export interface TvShowDetails extends TvShow {
 	episode_run_time: number[]
 	genres: Genre[]
 	number_of_seasons: number
 	number_of_episodes: number
+	seasons: TvSeasonSummary[]
 	tagline: string
 	status: string
 	homepage: string | null
 	last_air_date: string | null
+}
+
+export interface TvEpisode {
+	id: number
+	episode_number: number
+	name: string
+	overview: string
+	air_date: string | null
+	still_path: string | null
+	runtime: number | null
+	vote_average: number
+}
+
+export interface TvSeasonResponse {
+	id: number
+	season_number: number
+	name: string
+	episodes: TvEpisode[]
 }
 
 export interface CastMember {

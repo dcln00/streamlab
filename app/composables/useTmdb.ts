@@ -7,7 +7,9 @@ import type {
 	SearchMultiResponse,
 	TrendingPeriod,
 	TvListResponse,
+	TvSeasonResponse,
 	TvShowDetails,
+	VideosResponse,
 } from '~/types/tmdb'
 
 export default function () {
@@ -35,27 +37,16 @@ export default function () {
 			default: emptyMovieList,
 		})
 
-	const tvOriginAllowlist = ['US', 'GB', 'CA']
-
-	const filterTvByOrigin = (res: TvListResponse): TvListResponse => ({
-		...res,
-		results: (res.results ?? []).filter((s) =>
-			s.origin_country?.some((c) => tvOriginAllowlist.includes(c))
-		),
-	})
-
 	const fetchTvList = (endpoint: string, key: string) =>
 		useFetch<TvListResponse>(`/api/tmdb/${endpoint}`, {
 			key,
 			default: emptyTvList,
-			transform: filterTvByOrigin,
 		})
 
 	const fetchTrending = (period: TrendingPeriod = 'week') =>
 		fetchMovieList(`trending/movie/${period}`, `tmdb-trending-${period}`)
 
 	const fetchPopular = () => fetchMovieList('movie/popular', 'tmdb-popular')
-	const fetchTopRated = () => fetchMovieList('movie/top_rated', 'tmdb-top-rated')
 	const fetchUpcoming = () => fetchMovieList('movie/upcoming', 'tmdb-upcoming')
 	const fetchNowPlaying = () => fetchMovieList('movie/now_playing', 'tmdb-now-playing')
 
@@ -63,7 +54,6 @@ export default function () {
 		fetchTvList(`trending/tv/${period}`, `tmdb-tv-trending-${period}`)
 
 	const fetchPopularTv = () => fetchTvList('tv/popular', 'tmdb-tv-popular')
-	const fetchTopRatedTv = () => fetchTvList('tv/top_rated', 'tmdb-tv-top-rated')
 	const fetchOnTheAirTv = () => fetchTvList('tv/on_the_air', 'tmdb-tv-on-the-air')
 	const fetchAiringTodayTv = () => fetchTvList('tv/airing_today', 'tmdb-tv-airing-today')
 
@@ -86,13 +76,12 @@ export default function () {
 	const fetchTvCategory = (slug: Ref<string>, page: Ref<number>) =>
 		useAsyncData<TvListResponse>(
 			'tmdb-tv-category',
-			async () => {
+			() => {
 				const cat = tvCategories[slug.value]
-				if (!cat) return emptyTvList()
-				const res = await $fetch<TvListResponse>(`/api/tmdb/${cat.endpoint}`, {
+				if (!cat) return Promise.resolve(emptyTvList())
+				return $fetch<TvListResponse>(`/api/tmdb/${cat.endpoint}`, {
 					query: { page: page.value },
 				})
-				return filterTvByOrigin(res)
 			},
 			{ watch: [slug, page], default: emptyTvList }
 		)
@@ -166,6 +155,50 @@ export default function () {
 			{
 				watch: [tvId],
 				default: () => null,
+			}
+		)
+
+	const fetchMovieVideos = (movieId: Ref<number | null | undefined>) =>
+		useAsyncData<VideosResponse>(
+			`tmdb-movie-videos-${movieId.value ?? 'none'}`,
+			() => {
+				if (!movieId.value) return Promise.resolve({ id: 0, results: [] })
+				return $fetch<VideosResponse>(`/api/tmdb/movie/${movieId.value}/videos`)
+			},
+			{
+				watch: [movieId],
+				default: () => ({ id: 0, results: [] }),
+			}
+		)
+
+	const fetchTvSeason = (
+		tvId: Ref<number | null | undefined>,
+		seasonNumber: Ref<number>
+	) =>
+		useAsyncData<TvSeasonResponse | null>(
+			`tmdb-tv-season-${tvId.value ?? 'none'}`,
+			() => {
+				if (!tvId.value) return Promise.resolve(null)
+				return $fetch<TvSeasonResponse>(
+					`/api/tmdb/tv/${tvId.value}/season/${seasonNumber.value}`
+				)
+			},
+			{
+				watch: [tvId, seasonNumber],
+				default: () => null,
+			}
+		)
+
+	const fetchTvVideos = (tvId: Ref<number | null | undefined>) =>
+		useAsyncData<VideosResponse>(
+			`tmdb-tv-videos-${tvId.value ?? 'none'}`,
+			() => {
+				if (!tvId.value) return Promise.resolve({ id: 0, results: [] })
+				return $fetch<VideosResponse>(`/api/tmdb/tv/${tvId.value}/videos`)
+			},
+			{
+				watch: [tvId],
+				default: () => ({ id: 0, results: [] }),
 			}
 		)
 
@@ -276,12 +309,10 @@ export default function () {
 	return {
 		fetchTrending,
 		fetchPopular,
-		fetchTopRated,
 		fetchUpcoming,
 		fetchNowPlaying,
 		fetchTrendingTv,
 		fetchPopularTv,
-		fetchTopRatedTv,
 		fetchOnTheAirTv,
 		fetchAiringTodayTv,
 		fetchMovieCategory,
@@ -290,10 +321,13 @@ export default function () {
 		getTvCategory,
 		fetchMovieImages,
 		fetchMovieDetails,
+		fetchMovieVideos,
 		fetchMovieCredits,
 		fetchMovieSimilar,
 		fetchTvImages,
 		fetchTvDetails,
+		fetchTvSeason,
+		fetchTvVideos,
 		fetchTvCredits,
 		fetchTvSimilar,
 		searchMulti,

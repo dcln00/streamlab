@@ -2,16 +2,18 @@
 <script setup lang="ts">
 import type { SearchMultiResult } from '~/types/tmdb'
 
-const meta = useMeta()
 const tmdb = useTmdb()
 const route = useRoute()
 const router = useRouter()
 
-useSeo({
+const description = 'Search movies and TV shows on Streamlab.'
+
+useSeoMeta({
 	title: 'Search',
-	description: 'Search movies and TV shows on Streamlab.',
-	path: '/search',
-	noindex: true,
+	ogTitle: 'Search',
+	description,
+	ogDescription: description,
+	robots: 'noindex, nofollow',
 })
 
 const initialQuery = (() => {

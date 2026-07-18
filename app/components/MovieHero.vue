@@ -4,6 +4,7 @@ import type { Movie } from '~/types/tmdb'
 
 const props = defineProps<{
 	movie: Movie | null
+	to?: string
 }>()
 
 const tmdb = useTmdb()
@@ -35,11 +36,9 @@ const galleryItems = computed(() => {
 		.slice(0, 3)
 })
 
-const trailer = useTrailer()
-const handleWatchTrailer = (): void => {
-	if (!props.movie) return
-	trailer.play('movie', props.movie.id, props.movie.title)
-}
+const detailsLink = computed(() =>
+	props.movie ? props.to ?? `/movie/${props.movie.id}` : ''
+)
 
 const list = useList()
 const inList = computed(() =>
@@ -88,16 +87,15 @@ section(class="relative w-full h-screen overflow-hidden")
 				span {{ runtime }}
 			p(class="mt-5 text-white/80 line-clamp-3 max-w-xl") {{ movie.overview }}
 			div(class="mt-8 flex flex-wrap gap-3")
-				button(
-					type="button"
+				NuxtLink(
+					:to="detailsLink"
 					class="px-6 py-3 rounded-md bg-brand-accent text-cinema-bg font-medium hover:brightness-110 transition-all"
-					@click="handleWatchTrailer"
-				) ▶ Watch Trailer
+				) Play
 				button(
 					type="button"
 					class="px-6 py-3 rounded-md bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-medium transition-colors"
 					@click="handleToggleList"
-				) {{ inList ? '✓ Added to Watchlist' : '+ Add to Watchlist' }}
+				) {{ inList ? 'Added to Watchlist' : 'Add to Watchlist' }}
 			div(
 				v-if="galleryItems.length"
 				class="gallery mt-10 grid grid-cols-3 gap-3"
