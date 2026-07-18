@@ -30,17 +30,24 @@ const pagedPath = computed(() =>
 	page.value > 1 ? `${basePath.value}?page=${page.value}` : basePath.value
 )
 
-useSeo({
-	title: `${category.value?.title}${page.value > 1 ? ` (Page ${page.value})` : ''}`,
-	description: category.value?.description ?? meta.value.siteDescription,
-	path: pagedPath.value,
+const seoTitle = `${category.value?.title}${page.value > 1 ? ` (Page ${page.value})` : ''}`
+const seoDescription = category.value?.description ?? meta.value.siteDescription
+
+useSeoMeta({
+	title: seoTitle,
+	ogTitle: seoTitle,
+	description: seoDescription,
+	ogDescription: seoDescription,
+	ogUrl: () => `${siteUrl}${pagedPath.value}`,
 })
 
 const totalPages = computed(() => Math.min(data.value?.total_pages ?? 1, 500))
 
 useHead({
 	link: () => {
-		const links: Array<{ rel: string; href: string }> = []
+		const links: Array<{ rel: string; href: string; key?: string }> = [
+			{ key: 'canonical', rel: 'canonical', href: `${siteUrl}${pagedPath.value}` },
+		]
 		if (page.value > 1) {
 			const prevPage = page.value - 1
 			links.push({
