@@ -2,19 +2,20 @@
 <script setup lang="ts">
 import type { Movie } from '~/types/tmdb'
 
-const meta = useMeta()
 const tmdb = useTmdb()
 
-useSeo({
+const description = 'Browse popular, trending, and top-rated TV shows on Streamlab.'
+
+useSeoMeta({
 	title: 'TV Shows',
-	description: 'Browse popular, trending, and top-rated TV shows on Streamlab.',
-	path: '/tv',
+	ogTitle: 'TV Shows',
+	description,
+	ogDescription: description,
 })
 
-const [trending, popular, topRated, onTheAir, airingToday] = await Promise.all([
+const [trending, popular, onTheAir, airingToday] = await Promise.all([
 	tmdb.fetchTrendingTv('week'),
 	tmdb.fetchPopularTv(),
-	tmdb.fetchTopRatedTv(),
 	tmdb.fetchOnTheAirTv(),
 	tmdb.fetchAiringTodayTv(),
 ])
@@ -44,7 +45,7 @@ const heroAsMovie = computed<Movie | null>(() => {
 
 <template lang="pug">
 div
-	MovieHero(:movie="heroAsMovie")
+	MovieHero(:movie="heroAsMovie" :to="heroAsMovie ? `/tv/${heroAsMovie.id}` : undefined")
 	TvRail(
 		title="Popular TV Shows"
 		view-all-to="/tv/category/popular"
@@ -69,10 +70,4 @@ div
 		:shows="airingToday.data.value?.results ?? []"
 		:loading="airingToday.status.value === 'pending'"
 	)
-	//- TvRail(
-	//- 	title="Top Rated"
-	//- 	view-all-to="/tv/category/top-rated"
-	//- 	:shows="topRated.data.value?.results ?? []"
-	//- 	:loading="topRated.status.value === 'pending'"
-	//- )
 </template>
