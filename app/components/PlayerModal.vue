@@ -75,7 +75,7 @@ Teleport(to="body")
 				button(
 					type="button"
 					:aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
-					class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+					class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white hidden md:flex items-center justify-center transition-colors"
 					@click="toggleFullscreen"
 				)
 					svg(viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5")
