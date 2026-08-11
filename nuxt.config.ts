@@ -39,6 +39,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		apiKey: "",
 		apiBaseUrl: "",
+		streamEmbedBaseUrl: "",
 		public: {
 			imgBaseUrl: "",
 			imgBackdropBaseUrl: "",
