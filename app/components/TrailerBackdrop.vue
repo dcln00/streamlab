@@ -4,6 +4,7 @@ const props = defineProps<{
 	videoKey: string | null
 	backdrop: string
 	title: string
+	paused?: boolean
 }>()
 
 const PLAYER_STATE_PLAYING = 1
@@ -52,6 +53,10 @@ const onPlayerMessage = (event: MessageEvent): void => {
 	const state = payload.info?.playerState
 	if (state === undefined) return
 	const playing = state === PLAYER_STATE_PLAYING
+	// pauseVideo is async, so YouTube can still report "playing" just after the
+	// trailer is pre-empted by the stream player. Ignore those late reports so
+	// the backdrop cover stays up, but keep handling non-playing states.
+	if (playing && props.paused) return
 	if (playing && !isPlaying.value) hideCaptions()
 	isPlaying.value = playing
 }
@@ -71,6 +76,25 @@ const toggleMute = (): void => {
 	postToPlayer(isMuted.value ? 'unMute' : 'mute')
 	isMuted.value = !isMuted.value
 }
+
+// The stream player takes over the screen, so the trailer has to stop —
+// otherwise its audio keeps running underneath. Playback is only restored on
+// resume if the trailer was actually playing when it got pre-empted.
+const shouldResume = ref(false)
+
+watch(
+	() => props.paused,
+	(paused) => {
+		if (paused) {
+			shouldResume.value = isPlaying.value
+			if (isPlaying.value) postToPlayer('pauseVideo')
+			isPlaying.value = false
+			return
+		}
+		if (shouldResume.value) postToPlayer('playVideo')
+		shouldResume.value = false
+	}
+)
 
 onMounted(() => window.addEventListener('message', onPlayerMessage))
 onBeforeUnmount(() => window.removeEventListener('message', onPlayerMessage))
