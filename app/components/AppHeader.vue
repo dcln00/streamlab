@@ -1,6 +1,5 @@
 // app/components/AppHeader.vue
 <script setup lang="ts">
-const meta = useMeta()
 const list = useList()
 
 const navLinks = [
