@@ -3,6 +3,7 @@
 import type { TvEpisode } from '~/types/tmdb'
 const meta = useMeta()
 const tmdb = useTmdb()
+const stream = useStream()
 const route = useRoute()
 
 const tvId = computed(() => {
@@ -121,53 +122,47 @@ const heroTrailerKey = computed(
 )
 
 const streamUrl = ref<string | null>(null)
+const streamError = ref<string | null>(null)
 
 const activeSeasonNumber = computed(
 	() => seasonData.value?.season_number ?? selectedSeason.value
 )
 
-const handlePlay = (): void => {
-	if (!details.value) return
-	streamUrl.value = tvStreamUrl(details.value.id, activeSeasonNumber.value, 1)
+const closePlayer = (): void => {
+	streamUrl.value = null
+	streamError.value = null
 }
 
-const handlePlayEpisode = (episode: TvEpisode): void => {
+const playEpisode = async (episodeNumber: number): Promise<void> => {
 	if (!details.value) return
-	streamUrl.value = tvStreamUrl(
-		details.value.id,
-		activeSeasonNumber.value,
-		episode.episode_number
-	)
-	if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+	streamError.value = null
+	try {
+		streamUrl.value = await stream.tvStreamUrl(
+			details.value.id,
+			activeSeasonNumber.value,
+			episodeNumber
+		)
+	} catch {
+		streamError.value = 'This episode is unavailable right now.'
+	}
 }
+
+const handlePlay = (): Promise<void> => playEpisode(1)
+
+const handlePlayEpisode = (episode: TvEpisode): Promise<void> =>
+	playEpisode(episode.episode_number)
 </script>
 
 <template lang="pug">
 div(v-if="details")
 	section(class="relative w-full min-h-[90vh] overflow-clip")
-		template(v-if="streamUrl")
-			iframe(
-				:src="streamUrl"
-				:title="`${details.name} player`"
-				allow="autoplay; encrypted-media; fullscreen"
-				allowfullscreen
-				class="absolute inset-0 w-full h-full"
-			)
-			button(
-				type="button"
-				aria-label="Close player"
-				class="absolute top-20 right-4 md:right-8 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
-				@click="streamUrl = null"
-			)
-				svg(viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5")
-					path(stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12")
 		TrailerBackdrop(
-			v-if="!streamUrl"
 			:video-key="heroTrailerKey"
 			:backdrop="backdrop"
 			:title="details.name"
+			:paused="Boolean(streamUrl)"
 		)
-		div(v-if="!streamUrl" class="container relative min-h-[90vh] flex items-end pb-20 pt-32")
+		div(class="container relative min-h-[90vh] flex items-end pb-20 pt-32")
 			div(class="grid md:grid-cols-[auto_1fr] gap-8 w-full")
 				div(
 					v-if="poster"
@@ -200,6 +195,7 @@ div(v-if="details")
 						span(v-if="episodes") •
 						span(v-if="episodes") {{ episodes }} Episodes
 					p(class="mt-6 text-white/80 max-w-2xl") {{ details.overview }}
+					p(v-if="streamError" class="mt-4 text-sm text-brand-tag") {{ streamError }}
 					div(class="mt-8 flex flex-wrap gap-3")
 						button(
 							type="button"
@@ -246,4 +242,9 @@ div(v-if="details")
 						loading="lazy"
 						class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
 					)
+	PlayerModal(
+		:src="streamUrl"
+		:title="details.name"
+		@close="closePlayer"
+	)
 </template>
